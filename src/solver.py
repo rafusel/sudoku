@@ -29,7 +29,7 @@ def solve(puzzle):
                     print("No solution, backtracking")
                     puzzle[i][j] = 0 #Reset the current element
                     backtrack.pop() #Remove this an element we need to backtrack to
-                    i, j = backtrack.pop() #Get the new values we need to backtrack to
+                    i, j = backtrack[-1] #Get the new values we need to backtrack to
                     print("Backtracking to: ", str(i), str(j))
             else: #Don't need to solve this one.
                 print("Not solving this one")
@@ -52,10 +52,10 @@ def checkCol(possibleElems, puzzle, j):
 
 #Remove all elements
 def checkBox(possibleElems, puzzle, i, j):
-    quadrant = ((i//3) + 1, (j//3) + 1) #Which quadrant is the current place in.
-    for a in range(1, 4):
-        for b in range(1, 4):
-            possibleElems.discard(puzzle[a * quadrant[0] - 1][b * quadrant[1] - 1]) #Indexing trickery to get the indices in square.
+    quadrant = (i//3, j//3) #Which quadrant is the current place in.
+    for a in range(3):
+        for b in range(3):
+            possibleElems.discard(puzzle[a + 3 * quadrant[0]][b + 3 * quadrant[1]]) #Indexing trickery to get the indices in square.
 
 #Parse a string version of the given input puzzle.
 def parsePuzzle(stringPuzzle):
