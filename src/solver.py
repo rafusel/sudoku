@@ -7,14 +7,11 @@ def solve(puzzle):
     i, j = 0, 0
     while (i < len(puzzle)):
         while (j < len(puzzle[i])):
-            print(i, j)
             if (puzzle[i][j] == 0): # This is an element we may have to backtrack to.
-                print("This is a 0 element")
                 backtrack.append((i, j))
 
 
             if (len(backtrack) > 0 and backtrack[-1] == (i, j)): #We have to try and solve this element currently
-                print("Solving this element")
                 possibleElems = set()
                 for e in range(puzzle[i][j] + 1, 10): #Get a set of all the possible elements that we could solve with.
                     possibleElems.add(e)
@@ -22,20 +19,14 @@ def solve(puzzle):
                 checkCol(possibleElems, puzzle, j)
                 checkBox(possibleElems, puzzle, i, j)
                 if (len(possibleElems) > 0): # Does this element give us a possible solution
-                    print("This element's solution is: " + str(min(possibleElems)))
                     puzzle[i][j] = min(possibleElems)
                     j += 1
                 else: #This element does not give a possible solution: backtrack
-                    print("No solution, backtracking")
                     puzzle[i][j] = 0 #Reset the current element
                     backtrack.pop() #Remove this an element we need to backtrack to
                     i, j = backtrack[-1] #Get the new values we need to backtrack to
-                    print("Backtracking to: ", str(i), str(j))
             else: #Don't need to solve this one.
-                print("Not solving this one")
                 j += 1
-            printPuzzle(puzzle)
-            print()
         i += 1
         j = 0 
     return puzzle
@@ -63,7 +54,19 @@ def parsePuzzle(stringPuzzle):
     puzzle = puzzle.split("\n")
     puzzle = [puzzle[i].split(" ") for i in range(len(puzzle))]
     return [list(map(lambda a: int(a), puzzle[i])) for i in range(len(puzzle))]
-            
+
+#Function to print the string representation of an 2D integer puzzle.
+def printPuzzle(puzzle):
+    for i in range(9):
+        for j in range(9):
+            print(puzzle[i][j], end="")
+            print(" ", end="")
+        print()
+
+
+
+
+
 puzzle = '''
 3 0 6 5 0 8 4 0 0
 5 2 0 0 0 0 0 0 0
@@ -75,14 +78,5 @@ puzzle = '''
 0 0 0 0 0 0 0 7 4
 0 0 5 2 0 6 3 0 0
 '''
-def printPuzzle(puzzle):
-    for i in range(9):
-        for j in range(9):
-            print(puzzle[i][j], end="")
-            print(" ", end="")
-        print()
 
-#print(parsePuzzle(puzzle))
-#print(checkBox(parsePuzzle(puzzle), 3, 3))
-
-print(solve(parsePuzzle(puzzle)))
+printPuzzle(solve(parsePuzzle(puzzle)))
