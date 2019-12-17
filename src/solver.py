@@ -1,34 +1,46 @@
 #Import libs
-from random import randint
+from random import choice
 '''
 SOLVER
 '''
 # Function that takes in the puzzle as a 2D array and returns the solution.
 def solve(puzzle):
     backtrack = []
+    elemsTried = {}
     i, j = 0, 0
     while (i < len(puzzle)):
         while (j < len(puzzle[i])):
             if (puzzle[i][j] == 0): # This is an element we may have to backtrack to.
                 backtrack.append((i, j))
+                elemsTried[(i, j)] = set()
 
             if (len(backtrack) > 0 and backtrack[-1] == (i, j)): #We have to try and solve this element currently
                 possibleElems = set() #Get a set of all the possible elements that we could solve with.
-                for e in range(puzzle[i][j] + 1, 10): 
+                for e in range(1, 10): 
                     possibleElems.add(e)
-                removeTaken(possibleElems, puzzle, i, j)
+                removeTaken(possibleElems, puzzle, i, j) # Remove all the elements that occur in this row, column and box.
+                possibleElems = possibleElems - elemsTried[(i, j)]
+                print(possibleElems)
                 
                 if (len(possibleElems) > 0): # Does this element give us a possible solution
-                    puzzle[i][j] = min(possibleElems)
+                    #puzzle[i][j] = min(possibleElems)
+                    puzzle[i][j] = choice(tuple(possibleElems))
+                    elemsTried[(i, j)].add(puzzle[i][j])
                     j += 1
                 
                 else: #This element does not give a possible solution: backtrack
                     puzzle[i][j] = 0 #Reset the current element
                     backtrack.pop() #Remove this an element we need to backtrack to
+                    del elemsTried[(i, j)]
                     i, j = backtrack[-1] #Get the new values we need to backtrack to
 
             else: #Don't need to solve this one.
                 j += 1
+            
+            #print(elemsTried)
+            #print(backtrack)
+            printPuzzle(puzzle)
+            print()
         i += 1
         j = 0 
     return puzzle
@@ -92,6 +104,18 @@ puzzle = '''
 1 3 0 0 0 0 2 5 0
 0 0 0 0 0 0 0 7 4
 0 0 5 2 0 6 3 0 0
+'''
+
+emptyPuzzle = '''
+0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0
 '''
 
 printPuzzle(parsePuzzle(puzzle))
