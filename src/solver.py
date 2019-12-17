@@ -1,6 +1,8 @@
 #Import libs
 from random import randint
-
+'''
+SOLVER
+'''
 # Function that takes in the puzzle as a 2D array and returns the solution.
 def solve(puzzle):
     backtrack = []
@@ -10,26 +12,35 @@ def solve(puzzle):
             if (puzzle[i][j] == 0): # This is an element we may have to backtrack to.
                 backtrack.append((i, j))
 
-
             if (len(backtrack) > 0 and backtrack[-1] == (i, j)): #We have to try and solve this element currently
-                possibleElems = set()
-                for e in range(puzzle[i][j] + 1, 10): #Get a set of all the possible elements that we could solve with.
+                possibleElems = set() #Get a set of all the possible elements that we could solve with.
+                for e in range(puzzle[i][j] + 1, 10): 
                     possibleElems.add(e)
-                checkRow(possibleElems, puzzle, i)
-                checkCol(possibleElems, puzzle, j)
-                checkBox(possibleElems, puzzle, i, j)
+                removeTaken(possibleElems, puzzle, i, j)
+                
                 if (len(possibleElems) > 0): # Does this element give us a possible solution
                     puzzle[i][j] = min(possibleElems)
                     j += 1
+                
                 else: #This element does not give a possible solution: backtrack
                     puzzle[i][j] = 0 #Reset the current element
                     backtrack.pop() #Remove this an element we need to backtrack to
                     i, j = backtrack[-1] #Get the new values we need to backtrack to
+
             else: #Don't need to solve this one.
                 j += 1
         i += 1
         j = 0 
     return puzzle
+
+'''
+FUNCTIONS USED BY SOLVER
+'''
+#Remove all taken elements in a given row, column and box.
+def removeTaken(possibleElems, puzzle, i, j):
+    checkRow(possibleElems, puzzle, i)
+    checkCol(possibleElems, puzzle, j)
+    checkBox(possibleElems, puzzle, i, j)
 
 #Remove all elements in the ith row from possible elements.
 def checkRow(possibleElems, puzzle, i):
@@ -48,6 +59,10 @@ def checkBox(possibleElems, puzzle, i, j):
         for b in range(3):
             possibleElems.discard(puzzle[a + 3 * quadrant[0]][b + 3 * quadrant[1]]) #Indexing trickery to get the indices in square.
 
+
+'''
+UTILITY FUNCTIONS
+'''
 #Parse a string version of the given input puzzle.
 def parsePuzzle(stringPuzzle):
     puzzle = stringPuzzle.strip()
@@ -64,9 +79,9 @@ def printPuzzle(puzzle):
         print()
 
 
-
-
-
+'''
+TEST CASE FOR THE SOLVER
+'''
 puzzle = '''
 3 0 6 5 0 8 4 0 0
 5 2 0 0 0 0 0 0 0
@@ -79,4 +94,6 @@ puzzle = '''
 0 0 5 2 0 6 3 0 0
 '''
 
+printPuzzle(parsePuzzle(puzzle))
+print()
 printPuzzle(solve(parsePuzzle(puzzle)))
