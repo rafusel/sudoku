@@ -1,7 +1,7 @@
 from solver import fullSolve
 from random import randint
 
-#Function to generate a solvable sudoku puzzle.
+#Function to generate a solvable sudoku puzzle. Returns 2D int list.
 def generatePuzzle():
     #Create a solved puzzle
     zeroes = [[0 for i in range(9)] for i in range(9)]
