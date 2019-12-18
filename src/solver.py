@@ -1,10 +1,11 @@
 #Import libs
 from random import choice
+
 '''
 SOLVER
 '''
 # Function that takes in the puzzle as a 2D array and returns the solution.
-def solve(puzzle):
+def fullSolve(puzzle):
     backtrack = []
     elemsTried = {}
     i, j = 0, 0
@@ -20,7 +21,6 @@ def solve(puzzle):
                     possibleElems.add(e)
                 removeTaken(possibleElems, puzzle, i, j) # Remove all the elements that occur in this row, column and box.
                 possibleElems = possibleElems - elemsTried[(i, j)]
-                print(possibleElems)
                 
                 if (len(possibleElems) > 0): # Does this element give us a possible solution
                     #puzzle[i][j] = min(possibleElems)
@@ -37,10 +37,6 @@ def solve(puzzle):
             else: #Don't need to solve this one.
                 j += 1
             
-            #print(elemsTried)
-            #print(backtrack)
-            printPuzzle(puzzle)
-            print()
         i += 1
         j = 0 
     return puzzle
@@ -71,53 +67,3 @@ def checkBox(possibleElems, puzzle, i, j):
         for b in range(3):
             possibleElems.discard(puzzle[a + 3 * quadrant[0]][b + 3 * quadrant[1]]) #Indexing trickery to get the indices in square.
 
-
-'''
-UTILITY FUNCTIONS
-'''
-#Parse a string version of the given input puzzle.
-def parsePuzzle(stringPuzzle):
-    puzzle = stringPuzzle.strip()
-    puzzle = puzzle.split("\n")
-    puzzle = [puzzle[i].split(" ") for i in range(len(puzzle))]
-    return [list(map(lambda a: int(a), puzzle[i])) for i in range(len(puzzle))]
-
-#Function to print the string representation of an 2D integer puzzle.
-def printPuzzle(puzzle):
-    for i in range(9):
-        for j in range(9):
-            print(puzzle[i][j], end="")
-            print(" ", end="")
-        print()
-
-
-'''
-TEST CASE FOR THE SOLVER
-'''
-puzzle = '''
-3 0 6 5 0 8 4 0 0
-5 2 0 0 0 0 0 0 0
-0 8 7 0 0 0 0 3 1
-0 0 3 0 1 0 0 8 0
-9 0 0 8 6 3 0 0 5
-0 5 0 0 9 0 6 0 0
-1 3 0 0 0 0 2 5 0
-0 0 0 0 0 0 0 7 4
-0 0 5 2 0 6 3 0 0
-'''
-
-emptyPuzzle = '''
-0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0
-'''
-
-printPuzzle(parsePuzzle(puzzle))
-print()
-printPuzzle(solve(parsePuzzle(puzzle)))
